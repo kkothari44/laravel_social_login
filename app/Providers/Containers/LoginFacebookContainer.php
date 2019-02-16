@@ -23,6 +23,7 @@ class LoginFacebookContainer implements LoginFacebookContract {
     }
 
     public function handleProviderCallback() {
+        $users = '';
         $users = Socialite::driver('facebook')->user();
         $saveUser = new User;
         $exist = User::where('email', $users->email)->first();
@@ -33,10 +34,11 @@ class LoginFacebookContainer implements LoginFacebookContract {
             $saveUser->token = $users->token;
 
             $saveUser->save();
-            return "User Registered";
+            
+        }else{
+            $exist->token =  $users->token;
+            $exist->save();
         }
-        $exist->token =  $users->token;
-        $exist->save();
         return "User Logged in ";
     }
     
